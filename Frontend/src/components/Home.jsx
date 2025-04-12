@@ -11,7 +11,7 @@ import Footer from './Footer'
 const Home = () => {
   return (
     <div>
-      <Carousel/>
+      {/* <Carousel/> */}
       <Product/>
       <Products/>
       <Conditioner/>
