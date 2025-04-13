@@ -8,23 +8,20 @@ import { toast } from 'react-toastify';
 const ProductTable = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
-
-  // Check if user is logged in
   const token = localStorage.getItem('token');
 
-  // If no token, redirect to login page
   useEffect(() => {
     if (!token) {
       navigate('/login');
     } else {
-      fetchProducts(); // Fetch products if logged in
+      fetchProducts();
     }
   }, [token, navigate]);
 
   const fetchProducts = () => {
-    axios.get('http://localhost:3000/api/admin/product/get')  // Your backend API URL
+    axios.get('http://localhost:3000/api/admin/product/get')
       .then(response => {
-        setProducts(response.data.product);  // Assuming response.data is array of products
+        setProducts(response.data.product);
       })
       .catch(error => {
         console.error("Error fetching products:", error);
@@ -37,18 +34,17 @@ const ProductTable = () => {
         setProducts(prev => prev.filter(product => product._id !== id));
         toast.success("Product deleted successfully");
       })
-      .catch(error => {
+      .catch(() => {
         toast.warning("Delete failed");
       });
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove token on logout
+    localStorage.removeItem('token');
     toast.success("You have been logged out successfully!");
-    navigate('/login'); // Redirect to login page
+    navigate('/login');
   };
 
-  // Column configuration for data table
   const columns = [
     {
       name: 'Name',
@@ -67,46 +63,54 @@ const ProductTable = () => {
     {
       name: 'Actions',
       cell: row => (
-        <>
-          <button className='bg-red-500 p-1 px-3 rounded-md' onClick={() => handleDelete(row._id)} style={{ marginRight: '5px' }}>Delete</button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            className='bg-red-500 text-white p-1 px-3 rounded-md'
+            onClick={() => handleDelete(row._id)}
+          >
+            Delete
+          </button>
           <Link to={`/update/${row._id}`}>
-            <button className='bg-blue-500 p-1 px-3 rounded-md'>Update</button>
+            <button className='bg-blue-500 text-white p-1 px-3 rounded-md'>Update</button>
           </Link>
-        </>
+        </div>
       ),
     }
   ];
 
   return (
-    <>
-  
-    <div className='mt-20' style={{ padding: '20px' }}>
-      <div className='flex justify-end'>
-        <div className='flex bg-blue-600 px-4 py-1 me-14 rounded-md'>
-          <MdAdd className='mt-1' />
-          <Link to="/add" className="text-white">
-            Add Product
-          </Link>
-        </div>
+    <div className='min-h-screen bg-white px-4 md:px-10 pt-20 relative z-10'>
+      
+      {/* Top Buttons */}
+      <div className='flex flex-wrap justify-end items-center gap-3 mb-4'>
+        <Link to="/add" className='flex items-center bg-blue-600 text-white px-3 py-2 rounded-md'>
+          <MdAdd className='mr-1' />
+          Add Product
+        </Link>
+        {token && (
+          <button
+            className="bg-red-600 text-white px-3 py-2 rounded-md"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        )}
       </div>
-      <div className='mt-8'>
-      {token && (
-      <button className="bg-red-600 px-4 py-2 rounded-md" onClick={handleLogout}>
-        Logout
-      </button>
-    )}
-        <h2>Product Dashboard</h2>
-        {/* Show logout button if user is logged in */}
-       
+
+      {/* Heading */}
+      <h2 className='text-xl font-semibold mb-4'>Product Dashboard</h2>
+
+      {/* Data Table */}
+      <div className="overflow-x-auto">
         <DataTable
           columns={columns}
           data={products}
           pagination
           highlightOnHover
+          responsive
         />
       </div>
     </div>
-    </>
   );
 };
 

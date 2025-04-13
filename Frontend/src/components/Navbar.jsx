@@ -34,7 +34,7 @@ const Navbar = () => {
       </nav>
 
       {/* Main Nav */}
-      <div className='bg-black text-white'>
+      <div className='bg-black mt-2 text-white'>
         <div className='flex items-center justify-between py-3 px-4'>
           {/* Desktop Menu */}
           <div className='hidden md:flex gap-8'>
@@ -100,3 +100,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
